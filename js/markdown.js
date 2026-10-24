@@ -169,11 +169,13 @@ const Markdown = (() => {
     let inFlow = false;      // 是否在 ```flow 块内
     let pendingName = null;  // 最近遇到的 ## 标题（图名）
     let lastEntity = null;   // 最近定义的实体（边或节点），data: 子段行的归属目标
+    let edgeSeq = 0;         // 边序号（画布点击选中依赖边 id，解析器必须生成）
     const nodeIndex = new Map();  // id -> node（当前图）
 
     const ensureCur = () => {
       if (!cur) {
         cur = { name: pendingName || "未命名流程图", nodes: [], edges: [] };
+        edgeSeq = 0;
         nodeIndex.clear();
         lastEntity = null;
         diagrams.push(cur);
@@ -251,6 +253,7 @@ const Markdown = (() => {
           if (!nodeIndex.has(from.id)) registerNode({ id: from.id, def: { type: "process", name: from.id } });
           if (!nodeIndex.has(to.id)) registerNode({ id: to.id, def: { type: "process", name: to.id } });
           const edgeObj = {
+            id: "e" + (++edgeSeq),
             from: from.id, to: to.id,
             label: edge.label, style: edge.style,
           };
@@ -457,6 +460,7 @@ const Markdown = (() => {
   function parseMermaid(text) {
     const lines = String(text || "").split(/\r?\n/);
     let direction = "TD";
+    let edgeSeq = 0;
     const nodes = new Map();
     const edges = [];
 
@@ -523,7 +527,7 @@ const Markdown = (() => {
         if (fromTok.def) defineNode(fromTok.id, fromTok.def);
         if (toTok.def) defineNode(toTok.id, toTok.def);
         ensureNode(fromTok.id); ensureNode(toTok.id);
-        edges.push({ from: fromTok.id, to: toTok.id, label: parts[i].arrow.label, style: parts[i].arrow.style });
+        edges.push({ id: "e" + (++edgeSeq), from: fromTok.id, to: toTok.id, label: parts[i].arrow.label, style: parts[i].arrow.style });
       }
     }
 

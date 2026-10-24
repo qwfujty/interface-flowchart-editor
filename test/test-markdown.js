@@ -376,6 +376,9 @@ const r9c = MD.parse(md9);
 t("往返节点数一致", r9c[0]?.nodes.length === 55, `${r9c[0]?.nodes.length}`);
 t("往返边数一致", r9c[0]?.edges.length === 79);
 t("往返标签一致", r9c[0]?.edges.some((e) => e.label === "≥600"));
+t("mermaid 导入的边都有唯一 id（点击选中依赖）",
+  r9[0].edges.every((e) => e.id) && new Set(r9[0].edges.map((e) => e.id)).size === 79);
+t("md 解析的边都有唯一 id", r1[0].edges.every((e) => e.id) && new Set(r1[0].edges.map((e) => e.id)).size === r1[0].edges.length);
 
 // ================= 用例 10：autoLayout force 选项 =================
 console.log("\n[10] autoLayout force（工具栏自动布局强制重排）");

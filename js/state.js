@@ -313,6 +313,12 @@ const State = (() => {
     const saved = loadLocal();
     if (saved) {
       state = saved;
+      // 兜底：旧版本解析器生成的边可能没有 id（画布点击选中依赖 e.id），补齐
+      for (const d of state.diagrams) {
+        for (const e of (d.edges || [])) {
+          if (!e.id) e.id = uid("e");
+        }
+      }
     } else if (seedDiagram) {
       state = { diagrams: [seedDiagram], activeId: seedDiagram.id };
     } else {
