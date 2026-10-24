@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>接口流程图编辑器</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- 顶部工具栏 -->
+  <header id="toolbar">
+    <div class="tb-left">
+      <div class="logo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="2" width="8" height="6" rx="2" fill="#4f6ef7"/>
+          <rect x="14" y="16" width="8" height="6" rx="2" fill="#4f6ef7"/>
+          <path d="M6 8v6a4 4 0 0 0 4 4h4" stroke="#4f6ef7" stroke-width="2" fill="none"/>
+          <path d="M12 16l2 2-2 2" stroke="#4f6ef7" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="translate(-2,-2)"/>
+        </svg>
+        <span>接口流程图编辑器</span>
+      </div>
+      <span class="tb-sep"></span>
+      <button id="btn-undo" class="tb-btn" title="撤销 (Ctrl+Z)">
+        <svg viewBox="0 0 24 24" width="16" height="16"><path d="M9 14L4 9l5-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9h10a6 6 0 0 1 0 12h-3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      </button>
+      <button id="btn-redo" class="tb-btn" title="重做 (Ctrl+Y)">
+        <svg viewBox="0 0 24 24" width="16" height="16"><path d="M15 14l5-5-5-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 9H10a6 6 0 0 0 0 12h3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      </button>
+      <span class="tb-sep"></span>
+      <button id="btn-zoom-out" class="tb-btn" title="缩小">
+        <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none"/><path d="M8 11h6M20 20l-4.5-4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <button id="btn-zoom-reset" class="tb-btn tb-btn-text" title="重置缩放">100%</button>
+      <button id="btn-zoom-in" class="tb-btn" title="放大">
+        <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none"/><path d="M8 11h6M11 8v6M20 20l-4.5-4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <button id="btn-fit" class="tb-btn" title="适配视图">
+        <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="tb-sep"></span>
+      <button id="btn-auto-layout" class="tb-btn" title="自动布局（按接口边界分层排列）">
+        <svg viewBox="0 0 24 24" width="16" height="16"><rect x="3" y="4" width="6" height="4" rx="1" stroke="currentColor" stroke-width="1.6" fill="none"/><rect x="15" y="4" width="6" height="4" rx="1" stroke="currentColor" stroke-width="1.6" fill="none"/><rect x="9" y="11" width="6" height="4" rx="1" stroke="currentColor" stroke-width="1.6" fill="none"/><rect x="3" y="18" width="6" height="4" rx="1" stroke="currentColor" stroke-width="1.6" fill="none"/><rect x="15" y="18" width="6" height="4" rx="1" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M6 8v4a2 2 0 0 0 2 2h1M18 8v4a2 2 0 0 1-2 2h-1" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>
+        <span>自动布局</span>
+      </button>
+    </div>
+    <div class="tb-right">
+      <button id="btn-import-flowchart" class="tb-btn tb-btn-text" title="粘贴 Mermaid flowchart 文本导入">
+        <svg viewBox="0 0 24 24" width="15" height="15"><path d="M4 5h16v7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M4 5l4 4M4 5l4-4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="rotate(-90 6 5)"/><path d="M9 20h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 13l3 3-3 3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="rotate(90 15.5 16)"/></svg>
+        导入 flowchart
+      </button>
+      <button id="btn-import" class="tb-btn tb-btn-text" title="导入 .md 文件">
+        <svg viewBox="0 0 24 24" width="15" height="15"><path d="M12 3v12m0 0l-4-4m4 4l4-4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        导入 .md
+      </button>
+      <button id="btn-export" class="tb-btn tb-btn-primary" title="导出全部流程图为 .md 文件">
+        <svg viewBox="0 0 24 24" width="15" height="15"><path d="M12 15V3m0 0L8 7m4-4l4 4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        导出 .md
+      </button>
+      <input type="file" id="file-input" accept=".md,.markdown,.txt" multiple hidden>
+    </div>
+  </header>
+
+  <div id="main">
+    <!-- 左侧：流程图列表 + 节点面板 -->
+    <aside id="sidebar">
+      <div class="panel-section">
+        <div class="panel-header">
+          <span>流程图</span>
+          <button id="btn-new-diagram" class="mini-btn" title="新建流程图">＋</button>
+        </div>
+        <ul id="diagram-list"></ul>
+      </div>
+      <div class="panel-section">
+        <div class="panel-header"><span>节点大类（拖入画布）</span></div>
+        <div id="node-palette"><!-- JS 动态渲染：大类 + 小类 --></div>
+        <p class="palette-tip">选中节点后可在右侧「存为小类」，作为该大类下的预设模板</p>
+      </div>
+      <div class="panel-section panel-grow">
+        <div class="panel-header"><span>边界接口</span></div>
+        <div id="boundary-info" class="boundary-info">
+          <p class="hint">当前流程图以接口为边界：</p>
+          <div id="boundary-list"></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 中央画布 -->
+    <div id="canvas-wrap">
+      <svg id="canvas">
+        <defs>
+          <pattern id="grid-pattern" width="24" height="24" patternUnits="userSpaceOnUse">
+            <circle cx="1" cy="1" r="1" fill="rgba(99,110,130,0.18)"/>
+          </pattern>
+          <marker id="arrowhead" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+            <polygon points="0 0, 9 3.5, 0 7" fill="#6b7a99"/>
+          </marker>
+          <marker id="arrowhead-selected" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+            <polygon points="0 0, 9 3.5, 0 7" fill="#4f6ef7"/>
+          </marker>
+          <marker id="arrowhead-temp" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+            <polygon points="0 0, 9 3.5, 0 7" fill="#e0794f"/>
+          </marker>
+        </defs>
+        <g id="viewport">
+          <rect id="grid-bg" x="-20000" y="-20000" width="60000" height="60000" fill="url(#grid-pattern)"/>
+          <g id="layer-edges"></g>
+          <g id="layer-nodes"></g>
+          <g id="layer-overlay"></g>
+        </g>
+      </svg>
+      <div id="canvas-status">
+        <span id="status-pos">x: 0, y: 0</span>
+        <span id="status-count"></span>
+      </div>
+      <div id="drop-hint">松开鼠标放置节点</div>
+    </div>
+
+    <!-- 右侧属性面板 -->
+    <aside id="inspector">
+      <div id="inspector-empty" class="insp-empty">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#b8c1d4" stroke-width="1.4">
+          <rect x="3" y="4" width="18" height="16" rx="2"/>
+          <path d="M3 9h18M9 9v11" />
+        </svg>
+        <p>选中节点或连线<br>在此编辑属性</p>
+      </div>
+      <div id="inspector-node" class="insp-form" hidden>
+        <div class="insp-title">
+          <span class="insp-badge" id="node-type-badge">接口</span>
+          <span>节点属性</span>
+        </div>
+        <label class="field">
+          <span>名称</span>
+          <input id="prop-node-name" type="text" placeholder="节点名称">
+        </label>
+        <div class="field" id="field-node-api">
+          <span>调用方法</span>
+          <input id="prop-node-method" type="text" placeholder="自由填写，如 GET / POST / RPC">
+        </div>
+        <label class="field" id="field-node-path">
+          <span>接口路径</span>
+          <input id="prop-node-path" type="text" placeholder="/api/example">
+        </label>
+        <label class="field">
+          <span>说明</span>
+          <textarea id="prop-node-desc" rows="3" placeholder="补充说明（可留空）"></textarea>
+        </label>
+        <label class="field field-color">
+          <span>颜色</span>
+          <div class="color-row">
+            <input id="prop-node-color" type="color" value="#4f6ef7">
+            <button id="btn-reset-color" class="mini-btn" type="button">默认</button>
+          </div>
+        </label>
+        <div class="field" id="field-node-data">
+          <span>数据（子段 <span id="node-data-count">0</span>）</span>
+          <div id="node-data-list"></div>
+          <button id="btn-add-node-data" class="mini-btn add-data-btn" type="button">＋ 添加子段</button>
+        </div>
+        <div class="insp-actions">
+          <button id="btn-save-template" class="mini-btn" title="把当前节点配置保存为该大类下的小类模板">存为小类</button>
+          <button id="btn-duplicate-node" class="mini-btn">复制节点</button>
+          <button id="btn-delete-node" class="mini-btn danger">删除节点</button>
+        </div>
+        <div class="insp-boundary" id="node-boundary-tag" hidden>
+          <span id="boundary-tag-text"></span>
+        </div>
+      </div>
+      <div id="inspector-edge" class="insp-form" hidden>
+        <div class="insp-title"><span class="insp-badge badge-edge">连线</span><span>连线属性</span></div>
+        <label class="field">
+          <span>标签（条件）</span>
+          <input id="prop-edge-label" type="text" placeholder="如：成功 / 失败 / 是 / 否">
+        </label>
+        <label class="field">
+          <span>样式</span>
+          <select id="prop-edge-style">
+            <option value="solid">实线</option>
+            <option value="dashed">虚线</option>
+          </select>
+        </label>
+        <div class="field">
+          <span>数据（子段 <span id="edge-data-count">0</span>）</span>
+          <div id="edge-data-list"></div>
+          <button id="btn-add-data" class="mini-btn add-data-btn" type="button">＋ 添加子段</button>
+        </div>
+        <div class="insp-actions">
+          <button id="btn-delete-edge" class="mini-btn danger">删除连线</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<!-- Mermaid flowchart 粘贴导入弹窗 -->
+<div id="flowchart-modal" class="modal-mask" hidden>
+  <div class="modal-card">
+    <div class="modal-title">导入 Mermaid Flowchart</div>
+    <p class="modal-desc">
+      粘贴 flowchart / graph 语法的文本，自动转换为可编辑流程图。<br>
+      形状映射：菱形 <code>{x}</code> → 判断 · 圆柱 <code>[(x)]</code> → 数据 · 体育场/矩形等 → 处理；
+      支持 <code>--&gt;</code>、<code>-.-&gt;</code>、<code>==&gt;</code>、<code>|标签|</code>、链式连写与 <code>&lt;br/&gt;</code>。
+    </p>
+    <label class="field">
+      <span>流程图名称</span>
+      <input id="flowchart-name" type="text" value="导入的流程图">
+    </label>
+    <label class="field">
+      <span>Flowchart 文本</span>
+      <textarea id="flowchart-text" rows="13" spellcheck="false" placeholder="flowchart TD&#10;    A([开始界面]) -->|点击 开始| B[&quot;初始化&quot;]&#10;    B --> C{条件满足?}&#10;    C -->|是| D[(数据库)]&#10;    C -->|否| E([结束])"></textarea>
+    </label>
+    <div class="modal-actions">
+      <button id="flowchart-cancel" class="mini-btn">取消</button>
+      <button id="flowchart-confirm" class="tb-btn tb-btn-primary">导入</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/state.js"></script>
+<script src="js/markdown.js"></script>
+<script src="js/canvas.js"></script>
+<script src="js/panels.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

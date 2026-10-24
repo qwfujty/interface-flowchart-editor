@@ -1,0 +1,7 @@
+# 工具缓存目录（与本软件无关）
+.screenshots/
+.trae-html-share-packages/
+
+# 系统文件
+Thumbs.db
+.DS_Store
