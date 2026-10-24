@@ -153,11 +153,13 @@ const parsed = [...(r3[0]?.nodes || [])].sort((x, y) => sortKey(x).localeCompare
 let roundOK = true;
 for (let i = 0; i < orig.length; i++) {
   const a = orig[i], b = parsed[i];
-  if (a.name !== b.name || a.type !== b.type || a.x !== b.x || a.y !== b.y) roundOK = false;
+  if (a.name !== b.name || a.type !== b.type) roundOK = false;
   if (a.type === "api" && (a.method !== b.method || a.path !== b.path)) roundOK = false;
   if (a.desc !== b.desc) roundOK = false;
 }
-t("节点属性（名称/类型/坐标/接口/说明）全部一致", roundOK);
+t("节点属性（名称/类型/接口/说明）全部一致", roundOK);
+t("导出文本不含节点坐标 @(", !md3.includes("@("));
+t("导入后坐标由自动布局重新生成", (r3[0]?.nodes || []).every((n) => Number.isInteger(n.x) && Number.isInteger(n.y)));
 const edgesOK =
   r3[0].edges.filter((e) => e.label === "是").length === 1 &&
   r3[0].edges.filter((e) => e.style === "dashed").length === 1 &&

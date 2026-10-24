@@ -27,9 +27,9 @@ npx http-server .    # 或任意静态文件服务器
 ## 数据格式（.md）
 
 ```flow
-n1[API|用户注册|POST /api/auth/register] @(120,80)
-n2[PROC|验证参数] @(360,80)
-n3{DECISION|邮箱已注册?} @(600,80)
+n1[API|用户注册|POST /api/auth/register]
+n2[PROC|验证参数]
+n3{DECISION|邮箱已注册?}
 n1 --> n2
 n2 --> n3
 n3 -->|是| n4[API|返回错误|GET /api/error]
@@ -37,15 +37,15 @@ n3 -.->|否| n5[DATA|保存记录]
   data: string | max 64 | 错误描述
 ```
 
-- **节点**：`id[TYPE|名称|接口路径|说明] @(x,y)`，判断节点用 `id{...}`；TYPE = `API` / `PROC` / `DECISION` / `DATA`
+- **节点**：`id[TYPE|名称|接口路径|说明]`，判断节点用 `id{...}`；TYPE = `API` / `PROC` / `DECISION` / `DATA`
 - **边**：`a --> b`、`a -->|标签| b`、`a -.-> b`（虚线）；节点可内联在边两端
 - **数据子段**：`data: 类型 | 限制 | 说明描述`，缩进行归属于上一行实体（节点或边）
-- **坐标**：`@(x,y)` 可省略，省略时自动布局
+- **坐标**：导出不包含坐标（文件干净、可 diff），导入后自动布局；手写时可加 `@(x,y)` 指定位置
 
 ## 测试
 
 ```bash
-node test/test-markdown.js    # 81 个断言：解析/序列化往返、Mermaid 导入、主线回环布局等
+node test/test-markdown.js    # 85 个断言：解析/序列化往返、Mermaid 导入、主线回环布局等
 ```
 
 ## License

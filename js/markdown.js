@@ -569,7 +569,8 @@ const Markdown = (() => {
       let inner = `${tag}|${esc(n.name)}`;
       if (n.type === "api") inner += `|${n.method} ${n.path}`;
       if (n.desc) inner += `|${esc(n.desc)}`;
-      lines.push(`${idMap.get(n.id)}${open}${inner}${close} @(${n.x},${n.y})`);
+      // 不输出坐标：导出的 .md 保持干净（可手编、可 diff），导入时自动布局
+      lines.push(`${idMap.get(n.id)}${open}${inner}${close}`);
       // 数据节点的子段：类型 | 限制 | 说明描述
       for (const f of n.data || []) {
         lines.push(`  data: ${esc(f.type)} | ${esc(f.limit)} | ${esc(f.desc)}`);
