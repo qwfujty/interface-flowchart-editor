@@ -53,12 +53,15 @@ const IO = (() => {
   }
 
   function importFiles(files) {
-    if (!files || !files.length) return;
+    // 先固化为普通数组：change 处理器会同步清空 input.value，
+    // 原 FileList 在异步的 reader.onload 前已失效（length 变 0），导致完成判定失配
+    const list = Array.from(files || []);
+    if (!list.length) return;
     let totalDiagrams = 0, totalFiles = 0;
     let done = 0;
     const failures = [];
 
-    Array.from(files).forEach((file) => {
+    list.forEach((file) => {
       const reader = new FileReader();
       reader.onload = () => {
         try {
@@ -88,11 +91,11 @@ const IO = (() => {
         } catch (err) {
           failures.push(`${file.name}：解析失败（${err.message}）`);
         }
-        if (++done === files.length) finish();
+        if (++done === list.length) finish();
       };
       reader.onerror = () => {
         failures.push(`${file.name}：读取失败`);
-        if (++done === files.length) finish();
+        if (++done === list.length) finish();
       };
       reader.readAsText(file, "utf-8");
     });
